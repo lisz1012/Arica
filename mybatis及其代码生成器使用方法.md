@@ -1,5 +1,13 @@
 # MyBatis 及其代码生成器使用方法
 
+0. pom.xml 文件加入依赖：
+   ```
+   <dependency>
+       <groupId>org.mybatis.spring.boot</groupId>
+       <artifactId>mybatis-spring-boot-starter</artifactId>
+       <version>2.1.3</version>
+   </dependency>
+   ```
 1. 在这里有源码https://github.com/zouzg/mybatis-generator-gui 用Git把代码拉下来并且创建项目：https://github.com/zouzg/mybatis-generator-gui.git
 2. 运行MainUI （注意，在自己写代码的机器上运行的时候，必须用JDK 8）
 3. 在左上角点击配置并连接数据库
