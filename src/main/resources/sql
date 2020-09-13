@@ -1,0 +1,2 @@
+CREATE DATABASE `arica` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+create table item (id int unsigned auto_increment, title varchar(100) not null, content varchar(200), last_generate datetime, primary key (id));
