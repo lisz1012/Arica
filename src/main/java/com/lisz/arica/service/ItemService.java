@@ -10,7 +10,12 @@ public class ItemService {
 	@Autowired
 	private ItemDAO itemDao;
 
-	public void insert(Item item) {
+	public Item  insert(Item item) {
 		itemDao.insert(item);
+		return item;
+	}
+
+	public Item getById(int id) {
+		return itemDao.selectByPrimaryKey(id);
 	}
 }

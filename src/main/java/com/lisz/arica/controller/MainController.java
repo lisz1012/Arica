@@ -26,18 +26,43 @@ public class MainController {
 		return "arica";
 	}
 
+	/**
+	 * 进入"发布Item"页面
+	 * @return
+	 */
 	@GetMapping("add")
 	public String add() {
 		System.out.println("add!!!");
 		return "add";
 	}
 
+	/**
+	 * 表单接收，新商品入库
+	 * @param item
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("add")
 	public String add(Item item, Model model) { // 第二个参数用Model也可以，用Model.addAttribute()方法
-		System.out.println("add!!!\n" + item);
 		item.setLastGenerate(new Date());
-		itemService.insert(item);
-		model.addAttribute("msg", "Successfully added an item: " + item);
+		item = itemService.insert(item);
+		model.addAttribute("msg", "Successfully added an item: ");
+		model.addAttribute("item", item);
+		System.out.println("add!!!\n" + item);
 		return "success";
+	}
+
+	/**
+	 * 预览刚刚入库的商品，临时预览，动态
+	 * @param id
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("preview")
+	public String preview(@RequestParam int id, Model model) {
+		Item item = itemService.getById(id);
+		model.addAttribute("item", item);
+		System.out.println("Item Loaded: " + item);
+		return "preview";
 	}
 }
