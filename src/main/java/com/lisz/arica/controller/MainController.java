@@ -59,12 +59,12 @@ public class MainController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("preview")
+	@GetMapping("item")
 	public String preview(@RequestParam int id, Model model) {
 		Item item = itemService.getById(id);
 		model.addAttribute("item", item);
 		System.out.println("Item Loaded: " + item);
-		return "preview";
+		return "item";
 	}
 
 	/**
@@ -76,7 +76,20 @@ public class MainController {
 	public String itemList(Model model) {
 		List<Item> items = itemService.findAll();
 		model.addAttribute("items", items);
-		System.out.println("Item Loaded: " + items);
+		System.out.println("Items Loaded: " + items);
 		return "item_list";
+	}
+
+	/**
+	 * item 列表，可以生成html文件、修改item信息
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("generageHtml")
+	public String generageHtml(int id, Model model) {
+		itemService.generageHtml(id);
+		String msg = String.format("文件生成成功，<a href='item-%s.html'>预览</a>", id);
+		model.addAttribute("msg", msg);
+		return "success";
 	}
 }

@@ -54,7 +54,17 @@
             <thead><tr><th>ID</th><th>商品名称</th><th>描述</th><!--<th>上架日期</th>--><th>操作</th></tr></thead>
             <tbody>
             #for(item : items)
-            <tr><td>#(item.id)</td><td>#(item.title)</td><td>#(item.content)</td><!--<td>#(item.lastGenerate)</td>--><td>查看动态预览 超看静态文件 生成静态文件</td></tr>
+                <tr>
+                    <td>#(item.id)</td>
+                    <td>#(item.title)</td>
+                    <td>#(item.content)</td>
+                    <!--<td>#(item.lastGenerate)</td>-->
+                    <td>
+                        <a href="item?id=#(item.id)" class="layui-btn">查看动态预览</a>
+                        <a href="viewFile?id=#(item.id)" class="layui-btn">查看静态文件</a>
+                        <a href="generageHtml?id=#(item.id)" class="layui-btn">生成静态文件</a>
+                    </td>
+                </tr>
             #end
             </tbody>
         </table>
