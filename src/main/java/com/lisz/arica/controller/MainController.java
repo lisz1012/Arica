@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class MainController {
@@ -64,5 +65,18 @@ public class MainController {
 		model.addAttribute("item", item);
 		System.out.println("Item Loaded: " + item);
 		return "preview";
+	}
+
+	/**
+	 * item 列表，可以生成html文件、修改item信息
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("itemList")
+	public String itemList(Model model) {
+		List<Item> items = itemService.findAll();
+		model.addAttribute("items", items);
+		System.out.println("Item Loaded: " + items);
+		return "item_list";
 	}
 }

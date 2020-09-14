@@ -5,6 +5,8 @@ import com.lisz.arica.mapper.ItemDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ItemService {
 	@Autowired
@@ -17,5 +19,9 @@ public class ItemService {
 
 	public Item getById(int id) {
 		return itemDao.selectByPrimaryKey(id);
+	}
+
+	public List<Item> findAll() {
+		return itemDao.selectByExample(null);
 	}
 }

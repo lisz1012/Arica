@@ -25,7 +25,7 @@
         <a href="add" class="download1"> <span
                 class="glyphicon glyphicon-plus-sign"></span> <br>发布item
         </a>
-        <a href="itemList" class="download1"> <span
+        <a href="" class="download1"> <span
                 class="glyphicon glyphicon-folder-open"></span> <br>静态文件列表
         </a>
         <a href="#" class="about"> <span
@@ -46,13 +46,17 @@
 </header>
 
 <div class="content why-hilo">
-    <h2>Item Added</h2>
+    <h2>商品列表</h2>
 
-    <p class="info">
+    <p class="info" style="text-align:center">
 
-        <table border="1">
-            <tr><td>ID</td><td>商品名称</td><td>描述</td><td>上架日期</td></tr>
-            <tr><td>#(item.id)</td><td>#(item.title)</td><td>#(item.content)</td><td>#(item.lastGenerate)</td></tr>
+        <table border="1" class="layui-table" style="margin:auto">
+            <thead><tr><th>ID</th><th>商品名称</th><th>描述</th><!--<th>上架日期</th>--><th>操作</th></tr></thead>
+            <tbody>
+            #for(item : items)
+            <tr><td>#(item.id)</td><td>#(item.title)</td><td>#(item.content)</td><!--<td>#(item.lastGenerate)</td>--><td>查看动态预览 超看静态文件 生成静态文件</td></tr>
+            #end
+            </tbody>
         </table>
 
     </p>
