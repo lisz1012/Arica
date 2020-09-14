@@ -7,7 +7,12 @@ import com.lisz.arica.entity.Item;
 import com.lisz.arica.mapper.ItemDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ClassUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 @Service
@@ -40,5 +45,21 @@ public class ItemService {
 		String filePath = "/Users/shuzheng/Documents/dev/uploads";
 		// 最后会修改这个路径
 		template.render(kv, filePath + "/" + fileName);
+	}
+
+	public String getFileTemplateAsString() {
+		StringBuffer sb = new StringBuffer();
+		try (InputStream in = ClassUtils.getDefaultClassLoader().getResourceAsStream("templates/item.html");
+		     BufferedReader br = new BufferedReader(new InputStreamReader(in));) {
+
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				sb.append(line).append("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return sb.toString();
 	}
 }

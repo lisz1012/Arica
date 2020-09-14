@@ -11,6 +11,9 @@
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/layui.css" rel="stylesheet">
 <link href="css/home.css" rel="stylesheet">
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="layui.all.js"></script>
 <style type="text/css">
 .wa {
 	width: 100%;
@@ -46,16 +49,24 @@
 	</header>
 
 	<div class="content why-hilo">
-		<h2>Arica Ecosystem</h2>
+		<h2>在线修改模板</h2>
 
 		<p class="info">
-			Arica是一个在分布式中，数据静态化方案。 <br />
-
-
+			所见即所得，在线更新模板后，静态页面需要重新生成 <br />
 		</p>
 		<div style="text-align: -webkit-center;">
-
-			<img src="img/c.png" class="thumbnail" width="600px" />
+			<!-- 富文本 action -->
+			<textarea name="content" id="demo" style="display: none;">
+				#(templateStr)
+			</textarea>
+			<script>
+				layui.use('layedit', function(){
+					var layedit = layui.layedit;
+					layedit.build('demo'); //建立编辑器
+				});
+			</script>
+			<button class="layui-btn">保存</button>
+			<!-- 富文本 end -->
 		</div>
 
 
@@ -69,11 +80,6 @@
 
 		</div>
 	</div>
-
-
-	<script src="js/jquery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-<script src="layui.all.js"></script>
 </body>
 
 </html>

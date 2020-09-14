@@ -92,4 +92,27 @@ public class MainController {
 		model.addAttribute("msg", msg);
 		return "success";
 	}
+
+	/**
+	 * 模板管理
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("templates")
+	public String templates(Model model) {
+
+		return "templates";
+	}
+
+	/**
+	 * 修改模板
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("editTemplate")
+	public String editTemplate(Model model) {
+		String templateStr = itemService.getFileTemplateAsString();
+		model.addAttribute("templateStr", templateStr);
+		return "edit_template";
+	}
 }
