@@ -14,6 +14,7 @@
 4. 选中目标表
 5. 填写表和生成代码的信息，可以下生成到一个无关的目录下然后再手动拷贝过来，以免出错覆盖
 6. 回到我们的工作项目，把生成的实体类和实体类的Example类放到形如com.lisz.arica.entity的package下
-7. 把生成的DAO和BaseDAO放在形如com.lisz.arica.entity的package下
-8. 把XxxDAO.xml放在resources下的mapper目录下
-9. 尝试启动 Springboot 可能会报错，有些路径不对，修改xml文件。以上三步，在做的时候可能需要修改点东西
+7. 项目启动类的脑袋上面加上类似 @MapperScan("com.lisz.arica.mapper") 的mapper扫描范围限定
+8. 把生成的DAO和BaseDAO放在形如com.lisz.arica.entity的package下
+9. 把XxxDAO.xml放在resources下的mapper目录下
+10. 尝试启动 Springboot 可能会报错，有些路径不对，修改xml文件。以上三步，在做的时候可能需要修改点东西
