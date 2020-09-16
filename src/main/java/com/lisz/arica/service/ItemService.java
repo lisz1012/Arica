@@ -6,6 +6,7 @@ import com.jfinal.template.Template;
 import com.lisz.arica.entity.Item;
 import com.lisz.arica.mapper.ItemDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 
@@ -16,6 +17,9 @@ import java.util.List;
 public class ItemService {
 	@Autowired
 	private ItemDAO itemDao;
+
+	@Value("${nginx.html.root}")
+	private String nginxRoot;
 
 	public Item  insert(Item item) {
 		itemDao.insert(item);
@@ -39,7 +43,7 @@ public class ItemService {
 		Item item = itemDao.selectByPrimaryKey(id);
 		Kv kv = Kv.by("item", item);
 		String fileName = "item-" + id + ".html";
-		String filePath = "/Users/shuzheng/Documents/dev/uploads";
+		String filePath = nginxRoot;
 		// 最后会修改这个路径
 		template.render(kv, filePath + "/" + fileName);
 	}
