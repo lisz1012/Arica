@@ -21,6 +21,9 @@ public class ItemService {
 	@Value("${nginx.html.root}")
 	private String nginxRoot;
 
+	@Value("${nginx.template.path}")
+	private String templatePath;
+
 	public Item  insert(Item item) {
 		itemDao.insert(item);
 		return item;
@@ -50,7 +53,7 @@ public class ItemService {
 
 	public String getFileTemplateAsString() {
 		StringBuffer sb = new StringBuffer();
-		try (InputStream in = ClassUtils.getDefaultClassLoader().getResourceAsStream("templates/item.html");
+		try (InputStream in = ClassUtils.getDefaultClassLoader().getResourceAsStream(templatePath);
 		     BufferedReader br = new BufferedReader(new InputStreamReader(in));) {
 
 			String line = null;
