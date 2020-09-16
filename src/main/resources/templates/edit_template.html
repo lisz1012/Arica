@@ -55,18 +55,20 @@
 			所见即所得，在线更新模板后，静态页面需要重新生成 <br />
 		</p>
 		<div style="text-align: -webkit-center;">
-			<!-- 富文本 action -->
-			<textarea name="content" id="demo" style="display: none;">
-				#(templateStr)
-			</textarea>
-			<script>
-				layui.use('layedit', function(){
-					var layedit = layui.layedit;
-					layedit.build('demo'); //建立编辑器
-				});
-			</script>
-			<button class="layui-btn">保存</button>
-			<!-- 富文本 end -->
+			<form action="saveTemplate" method="post">
+				<!-- 富文本 action -->
+				<textarea name="content" id="demo" style="display: none;">
+					#(templateStr)
+				</textarea>
+				<script>
+					layui.use('layedit', function(){
+						var layedit = layui.layedit;
+						layedit.build('demo'); //建立编辑器
+					});
+				</script>
+				<!-- 富文本 end -->
+				<button class="layui-btn">保存</button>
+			</form>
 		</div>
 
 

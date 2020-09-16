@@ -115,4 +115,16 @@ public class MainController {
 		model.addAttribute("templateStr", templateStr);
 		return "edit_template";
 	}
+
+	/**
+	 * 保存模板
+	 * @return
+	 */
+	@PostMapping("saveTemplate")
+	public String saveTemplate(Model model, String content) {
+		itemService.saveTemplate(content);
+		String msg = "模板修改成功";
+		model.addAttribute("msg", msg);
+		return "success";
+	}
 }
