@@ -2,11 +2,15 @@ package com.lisz.arica;
 
 import com.jfinal.template.Engine;
 import com.jfinal.template.ext.spring.JFinalViewResolver;
+import com.jfinal.template.source.FileSourceFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class EnjoyConfig {
+	@Value("${nginx.template.path}")
+	private String templatePath;
 
 	@Bean(name = "jfinalViewResolver")
 	public JFinalViewResolver getJFinalViewResolver() {
@@ -26,11 +30,13 @@ public class EnjoyConfig {
 		engine.setDevMode(true);
 
 		// 使用 ClassPathSourceFactory 从 class path 与 jar 包中加载模板文件
-		engine.setToClassPathSourceFactory();
+		//engine.setToClassPathSourceFactory();
+		engine.setSourceFactory(new FileSourceFactory());
 
 		// 在使用 ClassPathSourceFactory 时要使用 setBaseTemplatePath
 		// 代替 jfr.setPrefix("/view/")
-		engine.setBaseTemplatePath("/templates/");
+		// engine.setBaseTemplatePath("/templates_1/");
+		engine.setBaseTemplatePath(templatePath);
 
 		// 添加模板函数
 //		engine.addSharedFunction("/common/_layout.html");

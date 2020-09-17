@@ -3,6 +3,8 @@ package com.lisz.arica.service;
 import com.jfinal.kit.Kv;
 import com.jfinal.template.Engine;
 import com.jfinal.template.Template;
+import com.jfinal.template.ext.spring.JFinalViewResolver;
+import com.jfinal.template.source.FileSourceFactory;
 import com.lisz.arica.entity.Item;
 import com.lisz.arica.mapper.ItemDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import java.util.List;
 
 @Service
 public class ItemService {
+	private static final String ITEM_HTML_TEMPLATE_FILE_NAME = "item.html";
+
 	@Autowired
 	private ItemDAO itemDao;
 
@@ -23,6 +27,9 @@ public class ItemService {
 
 	@Value("${nginx.template.path}")
 	private String templatePath;
+
+	@Autowired
+	private JFinalViewResolver resolver;
 
 	public Item  insert(Item item) {
 		itemDao.insert(item);
@@ -38,10 +45,8 @@ public class ItemService {
 	}
 
 	public void generageHtml(int id) {
-		Engine engine = Engine.use();
-		engine.setDevMode(true);
-		engine.setToClassPathSourceFactory();
-		Template template = engine.getTemplate("templates/item.html");
+		Engine engine = resolver.getEngine();
+		Template template = engine.getTemplate(ITEM_HTML_TEMPLATE_FILE_NAME);
 		// 从数据源获取数据
 		Item item = itemDao.selectByPrimaryKey(id);
 		Kv kv = Kv.by("item", item);
@@ -53,7 +58,7 @@ public class ItemService {
 
 	public String getFileTemplateAsString() {
 		StringBuffer sb = new StringBuffer();
-		try (InputStream in = ClassUtils.getDefaultClassLoader().getResourceAsStream(templatePath);
+		try (InputStream in = new FileInputStream(templatePath + "/" + ITEM_HTML_TEMPLATE_FILE_NAME);
 		     BufferedReader br = new BufferedReader(new InputStreamReader(in));) {
 
 			String line = null;
@@ -68,7 +73,7 @@ public class ItemService {
 	}
 
 	public void saveTemplate(String content) {
-		String fileName = ClassUtils.getDefaultClassLoader().getResource("templates/item.html").getFile();
+		String fileName = templatePath + "/" + ITEM_HTML_TEMPLATE_FILE_NAME; //ClassUtils.getDefaultClassLoader().getResource("templates_1/item.html").getFile();
 		try (FileWriter fw = new FileWriter(fileName, false);) {
 			fw.write(content);
 			fw.flush();
