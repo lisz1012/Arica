@@ -135,4 +135,16 @@ public class MainController {
 		model.addAttribute("result", itemHtmls);
 		return "generateAll";
 	}
+
+	/**
+	 * 电商首页
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("main")
+	public String main(Model model) {
+		List<Item> items = itemService.findAll();
+		model.addAttribute("items", items);
+		return "item_main";
+	}
 }
