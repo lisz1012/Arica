@@ -44,13 +44,17 @@ public class ItemService {
 		return itemDao.selectByExample(null);
 	}
 
-	public void generageHtml(int id) {
+	public void generateHtml(int id) {
 		Engine engine = resolver.getEngine();
 		Template template = engine.getTemplate(ITEM_HTML_TEMPLATE_FILE_NAME);
 		// 从数据源获取数据
 		Item item = itemDao.selectByPrimaryKey(id);
+		generateHtml(item, template);
+	}
+
+	private void generateHtml(Item item, Template template) {
 		Kv kv = Kv.by("item", item);
-		String fileName = "item-" + id + ".html";
+		String fileName = "item-" + item.getId() + ".html";
 		String filePath = nginxRoot;
 		// 最后会修改这个路径
 		template.render(kv, filePath + "/" + fileName);
@@ -80,5 +84,12 @@ public class ItemService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void generateAll() {
+		List<Item> items = itemDao.selectByExample(null);
+		Engine engine = resolver.getEngine();
+		Template template = engine.getTemplate(ITEM_HTML_TEMPLATE_FILE_NAME);
+		items.forEach(i->generateHtml(i, template));
 	}
 }

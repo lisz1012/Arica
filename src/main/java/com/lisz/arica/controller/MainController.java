@@ -1,18 +1,13 @@
 package com.lisz.arica.controller;
 
-import com.jfinal.template.ext.spring.JFinalViewResolver;
-import com.lisz.arica.EnjoyConfig;
 import com.lisz.arica.entity.Item;
-import com.lisz.arica.mapper.ItemDAO;
 import com.lisz.arica.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Date;
 import java.util.List;
@@ -87,7 +82,7 @@ public class MainController {
 	 */
 	@GetMapping("generageHtml")
 	public String generageHtml(int id, Model model) {
-		itemService.generageHtml(id);
+		itemService.generateHtml(id);
 		String msg = String.format("文件生成成功，<a href='item-%s.html'>预览</a>", id);
 		model.addAttribute("msg", msg);
 		return "success";
@@ -124,6 +119,19 @@ public class MainController {
 	public String saveTemplate(Model model, String content) {
 		itemService.saveTemplate(content);
 		String msg = "模板修改成功";
+		model.addAttribute("msg", msg);
+		return "success";
+	}
+
+	/**
+	 *
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("generateAll")
+	public String generateAll(Model model) {
+		itemService.generateAll();
+		String msg = "批量生成静态文件成功";
 		model.addAttribute("msg", msg);
 		return "success";
 	}
