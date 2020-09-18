@@ -21,6 +21,8 @@ import java.util.List;
 public class ItemService {
 	private static final String ITEM_HTML_TEMPLATE_FILE_NAME = "item.html";
 
+	private static final String MAIN_HTML_TEMPLATE_FILE_NAME = "item_main.html";
+
 	@Autowired
 	private ItemDAO itemDao;
 
@@ -47,14 +49,14 @@ public class ItemService {
 	}
 
 	public void generateHtml(int id) {
-		Engine engine = resolver.getEngine();
-		Template template = engine.getTemplate(ITEM_HTML_TEMPLATE_FILE_NAME);
 		// 从数据源获取数据
 		Item item = itemDao.selectByPrimaryKey(id);
-		generateHtml(item, template);
+		generateHtml(item, ITEM_HTML_TEMPLATE_FILE_NAME);
 	}
 
-	private void generateHtml(Item item, Template template) {
+	private void generateHtml(Item item, String templateFileName) {
+		Engine engine = resolver.getEngine();
+		Template template = engine.getTemplate(templateFileName);
 		Kv kv = Kv.by("item", item);
 		String fileName = "item-" + item.getId() + ".html";
 		String filePath = nginxRoot;
@@ -64,7 +66,6 @@ public class ItemService {
 		if (item instanceof ItemHtml) {
 			((ItemHtml)item).setLocation(fullPath);
 		}
-
 	}
 
 	public String getFileTemplateAsString() {
@@ -94,12 +95,10 @@ public class ItemService {
 	}
 
 	public List<ItemHtml> generateAll() {
-		Engine engine = resolver.getEngine();
-		Template template = engine.getTemplate(ITEM_HTML_TEMPLATE_FILE_NAME);
 		List<ItemHtml> itemHtmls = itemDao.selectAll();
 		for (ItemHtml itemHtml : itemHtmls) {
 			try {
-				generateHtml(itemHtml, template);
+				generateHtml(itemHtml, ITEM_HTML_TEMPLATE_FILE_NAME);
 				itemHtml.setHtmlGenerateStatus("Success");
 			} catch (Exception e) {
 				itemHtml.setHtmlGenerateStatus("Failed");
@@ -107,5 +106,17 @@ public class ItemService {
 			}
 		}
 		return itemHtmls;
+	}
+
+	public void generateMainHtml() {
+		Engine engine = resolver.getEngine();
+		Template template = engine.getTemplate(MAIN_HTML_TEMPLATE_FILE_NAME);
+		List<Item> items = itemDao.selectByExample(null);
+		Kv kv = Kv.by("items", items);
+		String fileName = "main.html";
+		String filePath = nginxRoot;
+		// 最后会修改这个路径
+		String fullPath = filePath + "/" + fileName;
+		template.render(kv, fullPath);
 	}
 }

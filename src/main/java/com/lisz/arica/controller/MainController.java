@@ -147,4 +147,12 @@ public class MainController {
 		model.addAttribute("items", items);
 		return "item_main";
 	}
+
+	@GetMapping("generateMain")
+	public String generateMain(Model model) {
+		itemService.generateMainHtml();
+		String msg = "电商首页静态页面生成成功：<a href='main.html'>查看</a>";
+		model.addAttribute("msg", msg);
+		return "success";
+	}
 }
