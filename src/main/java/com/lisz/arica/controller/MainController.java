@@ -1,6 +1,7 @@
 package com.lisz.arica.controller;
 
 import com.lisz.arica.entity.Item;
+import com.lisz.arica.entity.ItemHtml;
 import com.lisz.arica.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -130,9 +131,8 @@ public class MainController {
 	 */
 	@GetMapping("generateAll")
 	public String generateAll(Model model) {
-		itemService.generateAll();
-		String msg = "批量生成静态文件成功";
-		model.addAttribute("msg", msg);
-		return "success";
+		List<ItemHtml> itemHtmls = itemService.generateAll();
+		model.addAttribute("result", itemHtmls);
+		return "generateAll";
 	}
 }

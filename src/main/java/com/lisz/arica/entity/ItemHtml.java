@@ -1,4 +1,9 @@
 package com.lisz.arica.entity;
 
-public class ItemHtml {
+import lombok.Data;
+
+@Data
+public class ItemHtml extends Item {
+	private String htmlGenerateStatus;
+	private String location;
 }
