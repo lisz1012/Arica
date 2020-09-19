@@ -43,7 +43,11 @@ public class MainController {
 	@PostMapping("add")
 	public String add(Item item, Model model) { // 第二个参数用Model也可以，用Model.addAttribute()方法
 		item.setLastGenerate(new Date());
-		item = itemService.insert(item);
+		try {
+			item = itemService.add(item);
+		} catch (RuntimeException e) {
+			return "error";
+		}
 		model.addAttribute("msg", "Successfully added an item: ");
 		model.addAttribute("item", item);
 		System.out.println("add!!!\n" + item);

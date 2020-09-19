@@ -11,6 +11,8 @@ import com.lisz.arica.mapper.ItemDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.ClassUtils;
 
 import java.io.*;
@@ -144,5 +146,22 @@ public class ItemService {
 			}
 		}
 		return map;
+	}
+
+	/**
+	 * 写入数据库insert + 生成文件generateHtml，其中有一个失败的话就回滚
+	 * @param item
+	 * @return
+	 */
+	@Transactional
+	public Item add(Item item) {
+		try {
+			itemDao.insert(item);
+			generateHtml(item, ITEM_HTML_TEMPLATE_FILE_NAME);
+		} catch (Exception e) {
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			throw new RuntimeException("添加新商品失败");
+		}
+		return item;
 	}
 }
