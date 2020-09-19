@@ -14,8 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ItemService {
@@ -118,5 +122,27 @@ public class ItemService {
 		// 最后会修改这个路径
 		String fullPath = filePath + "/" + fileName;
 		template.render(kv, fullPath);
+	}
+
+	public Map<String, Boolean> health() {
+		Map<String, Boolean> map = new HashMap<>();
+		map.put("192.168.1.2", null);
+		map.put("192.168.1.254", null);
+		map.put("192.168.1.33", null);
+
+		for (Map.Entry<String, Boolean> entry : map.entrySet()) {
+			try {
+				InetAddress inetAddress = InetAddress.getByName(entry.getKey());
+				entry.setValue(inetAddress.isReachable(3000));
+//				if () {
+//					entry.setValue(true);
+//				} else {
+//					entry.setValue(false);
+//				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return map;
 	}
 }

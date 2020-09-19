@@ -11,6 +11,9 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/layui.css" rel="stylesheet">
     <link href="css/home.css" rel="stylesheet">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="layui.all.js"></script>
     <style type="text/css">
         .wa {
             width: 100%;
@@ -46,18 +49,20 @@
 </header>
 
 <div class="content why-hilo">
-    <h2>商品列表</h2>
+    <h2>服务器列表</h2>
     <p class="info" style="text-align:left">
 
-            #for(item : items)
-                <div style="text-align:left; padding-left: 500px">
-                    <a href="item-#(item.id).html"><img src="img/default_item.png"></a> &nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="item-#(item.id).html" style="padding-top: 50px; font-family: 'Arial Black'">#(item.title)</a>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    #(item.content)
-                </div>
-            #end
+    <table border="1" class="layui-table" style="margin:auto">
+        <thead><tr><th>IP</th><th>状态</th></tr></thead>
+        <tbody>
+        #for(item : map)
+            <tr>
+                <td>#(item.key)</td>
+                <td>#(item.value)</td>
+            </tr>
+        #end
+        </tbody>
+    </table>
 
     </p>
     <div style="text-align: -webkit-center;">
@@ -75,11 +80,6 @@
 
     </div>
 </div>
-
-
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="layui.all.js"></script>
 </body>
 
 </html>

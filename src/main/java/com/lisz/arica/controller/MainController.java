@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MainController {
@@ -154,5 +155,12 @@ public class MainController {
 		String msg = "电商首页静态页面生成成功：<a href='main.html'>查看</a>";
 		model.addAttribute("msg", msg);
 		return "success";
+	}
+
+	@GetMapping("health")
+	public String health(Model model) {
+		Map<String, Boolean> map = itemService.health();
+		model.addAttribute("map", map);
+		return "health";
 	}
 }
