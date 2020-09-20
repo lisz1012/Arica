@@ -188,4 +188,11 @@ public class MainController {
 		model.addAttribute("msg", msg);
 		return "success";
 	}
+
+	@GetMapping("checkFile")
+	public String checkFile(Model model) {
+		List<Item> itemsMissingFile = itemService.getItemsMissingFile();
+		model.addAttribute("itemsMissingFile", itemsMissingFile);
+		return "check_file";
+	}
 }

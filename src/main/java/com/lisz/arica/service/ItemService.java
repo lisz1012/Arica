@@ -203,4 +203,16 @@ public class ItemService {
 	public void releaseAllItemEditLocks() {
 		ITEM_IDS_IN_EDITION.clear();
 	}
+
+	public List<Item> getItemsMissingFile() {
+		List<Item> allItems = itemDao.selectByExample(null);
+		List<Item> itemsMissingFile = new ArrayList<>();
+		for (Item item : allItems) {
+			File file = new File(nginxRoot + "/item-" + item.getId() + ".html");
+			if (!file.exists()) {
+				itemsMissingFile.add(item);
+			}
+		}
+		return itemsMissingFile;
+	}
 }
