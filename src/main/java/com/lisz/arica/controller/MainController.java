@@ -175,6 +175,8 @@ public class MainController {
 	public String edit(int id, Model model) {
 		Item item = itemService.getById(id);
 		model.addAttribute("item", item);
+		boolean hasItemEditLock = itemService.getItemEditLockForItemId(item.getId());
+		model.addAttribute("hasItemEditLock", hasItemEditLock);
 		return "edit";
 	}
 

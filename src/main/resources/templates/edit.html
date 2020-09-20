@@ -20,10 +20,17 @@
 		width: 100%;
 	}
 	</style>
-
+	<script>
+		function SendRequest()
+		{
+			var sURL = "releaseItemEditLock?id=#(item.id)";
+			$.ajax({ url: sURL });
+		}
+		//window.onunload = SendRequest();
+	</script>
 	</head>
 
-	<body>
+	<body onbeforeunload="SendRequest();">
 		<header id="header">
 			<div>
 				<a href="add" class="download1"> <span
@@ -40,7 +47,7 @@
 					class="api"> <span class="glyphicon  glyphicon-ok-sign"></span>
 					<br>文件检查
 				</a>
-				<a class="demo" href="#"> <span
+				<a class="demo" href="releaseAllItemEditLocks"> <span
 					class="glyphicon glyphicon-floppy-disk"></span> <br>系统设置
 				</a>
 				<a class="demo" href="health"> <span
@@ -63,8 +70,6 @@
 					    <input type="text" name="title" required  lay-verify="required" placeholder="请输入商品名称" autocomplete="off" class="layui-input" value="#(item.title)">
 						<input type="hidden" name="lastGenerate" disabled class="layui-input" value="#(item.lastGenerate)">
 					</div>
-
-
 				</div>
 
 			 	<br />
@@ -83,8 +88,13 @@
 
 					<div class="layui-form-item">
 					  <div class="layui-input-block">
-						<button class="layui-btn" >保存</button>
-						<a href="javascript:history.go(-1);" class="layui-btn layui-btn-primary">返回</a>
+						  #if(hasItemEditLock)
+						  	<button class="layui-btn" >保存</button>
+						  #end
+						  #if(!hasItemEditLock)
+						  	<p>有另一个用户正在编辑, 目前只读，请稍后再刷新尝试编辑</p>
+						  #end
+						  <a href="javascript:history.go(-1);" class="layui-btn layui-btn-primary" onclick="SendRequest();">返回</a>
 					  </div>
 					</div>
 				</div>

@@ -26,6 +26,8 @@ public class ItemService {
 
 	private static final String MAIN_HTML_TEMPLATE_FILE_NAME = "item_main.html";
 
+	private static final Set<Integer> ITEM_IDS_IN_EDITION = new HashSet<>();
+
 	@Autowired
 	private ItemDAO itemDao;
 
@@ -179,7 +181,26 @@ public class ItemService {
 		} catch (Exception e) {
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			throw new RuntimeException("编辑已有商品失败");
+		} finally {
+			ITEM_IDS_IN_EDITION.remove(item.getId());
 		}
 		return item;
+	}
+
+	public synchronized boolean getItemEditLockForItemId(Integer id) {
+		if (ITEM_IDS_IN_EDITION.contains(id)){
+			return false;
+		} else {
+			ITEM_IDS_IN_EDITION.add(id);
+			return true;
+		}
+	}
+
+	public void releaseItemEditLock(int id) {
+		ITEM_IDS_IN_EDITION.remove(id);
+	}
+
+	public void releaseAllItemEditLocks() {
+		ITEM_IDS_IN_EDITION.clear();
 	}
 }
