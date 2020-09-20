@@ -18,10 +18,7 @@ import org.springframework.util.ClassUtils;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ItemService {
@@ -155,12 +152,33 @@ public class ItemService {
 	 */
 	@Transactional
 	public Item add(Item item) {
+		item.setLastGenerate(new Date());
 		try {
 			itemDao.insert(item);
 			generateHtml(item, ITEM_HTML_TEMPLATE_FILE_NAME);
 		} catch (Exception e) {
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			throw new RuntimeException("添加新商品失败");
+		}
+		return item;
+	}
+
+	/**
+	 * 修改数据库updateByPrimaryKey + 生成文件generateHtml，其中有一个失败的话就回滚
+	 * @param item
+	 * @return
+	 */
+	@Transactional
+	public Item update(Item item) {
+		try {
+			item.setLastGenerate(new Date());
+			itemDao.updateByPrimaryKey(item);
+			/*// item中空值的字段不会覆盖数据库中原有的值
+			itemDao.updateByPrimaryKeySelective(item);*/
+			generateHtml(item, ITEM_HTML_TEMPLATE_FILE_NAME);
+		} catch (Exception e) {
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			throw new RuntimeException("编辑已有商品失败");
 		}
 		return item;
 	}

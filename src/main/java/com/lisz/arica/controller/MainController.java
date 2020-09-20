@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,6 @@ public class MainController {
 	 */
 	@PostMapping("add")
 	public String add(Item item, Model model) { // 第二个参数用Model也可以，用Model.addAttribute()方法
-		item.setLastGenerate(new Date());
 		try {
 			item = itemService.add(item);
 		} catch (RuntimeException e) {
@@ -166,5 +164,26 @@ public class MainController {
 		Map<String, Boolean> map = itemService.health();
 		model.addAttribute("map", map);
 		return "health";
+	}
+
+	@GetMapping("testError")
+	public String testError(Model model) {
+		throw new RuntimeException("出错了");
+	}
+
+	@GetMapping("edit")
+	public String edit(int id, Model model) {
+		Item item = itemService.getById(id);
+		model.addAttribute("item", item);
+		return "edit";
+	}
+
+	@PostMapping("edit")
+	public String edit(Item item, Model model) {
+		// 这里这个item必须保证把id带过来，否则下面这句里面无法更新，为此 edit GET API返回的页面里面有个隐藏的id属性
+		itemService.update(item);
+		String msg = String.format("商品编辑并保存成功：<a href='item-%s.html'>查看</a>", item.getId());
+		model.addAttribute("msg", msg);
+		return "success";
 	}
 }

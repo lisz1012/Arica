@@ -52,7 +52,7 @@
     <p class="info" style="text-align:center">
 
         <table border="1" class="layui-table" style="margin:auto">
-            <thead><tr><th>ID</th><th>商品名称</th><th>描述</th><!--<th>上架日期</th>--><th>操作</th></tr></thead>
+            <thead><tr><th>ID</th><th>商品名称</th><th>描述</th><!--<th>最后修改日期</th>--><th>操作</th></tr></thead>
             <tbody>
             #for(item : items)
                 <tr>
@@ -64,6 +64,7 @@
                         <a href="item?id=#(item.id)" class="layui-btn">查看动态预览</a>
                         <a href="item-#(item.id).html" class="layui-btn">查看静态文件</a>
                         <a href="generageHtml?id=#(item.id)" class="layui-btn">生成静态文件</a>
+                        <a href="edit?id=#(item.id)" class="layui-btn">编辑静态文件</a>
                     </td>
                 </tr>
             #end
