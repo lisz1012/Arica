@@ -145,10 +145,13 @@ public class MainController {
 	 * @return
 	 */
 	@GetMapping("main")
-	public String main(Model model) {
-		List<Item> items = itemService.findAll();
+	public String main(Model model, @RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "5") int pageSize) {
+		// List<Item> items = itemService.findAll();
+		// Category参数还没传过来
+		List<Item> items = itemService.findByPage(pageNum, pageSize);
 		model.addAttribute("items", items);
-		return "item_main";
+		//return "item_main";
+		return "item_page";
 	}
 
 	@GetMapping("generateMain")

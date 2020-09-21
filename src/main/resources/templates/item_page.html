@@ -6,7 +6,7 @@
     <meta name="viewport"
           content="user-scalable=no, width=device-width, minimum-scale=1, maximum-scale=1">
 
-    <title>静态文件管理</title>
+    <title>Arica</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/layui.css" rel="stylesheet">
@@ -32,7 +32,7 @@
                 class="glyphicon glyphicon-paperclip"></span> <br>模板管理
         </a>
         <a href="https://mashibing.com/#" class="home"> </a>
-        <a href="checkFile"
+        <a href="#"
            class="api"> <span class="glyphicon  glyphicon-ok-sign"></span>
             <br>文件检查
         </a>
@@ -42,7 +42,7 @@
         <a class="demo" href="health"> <span
                 class="glyphicon glyphicon glyphicon-tasks"></span> <br>系统状态
         </a>
-        <a class="demo" href="main"> <span
+        <a class="demo" href="#"> <span
                 class="glyphicon glyphicon glyphicon-tasks"></span> <br>站点首页
         </a>
     </div>
@@ -50,30 +50,28 @@
 
 <div class="content why-hilo">
     <h2>商品列表</h2>
-    <a style="text-align:center" href="generateAll">批量生成静态文件</a>
-    <a style="text-align:center" href="generateMain">生成首页静态文件</a>
-    <p class="info" style="text-align:center">
-
-        <table border="1" class="layui-table" style="margin:auto">
-            <thead><tr><th>ID</th><th>商品名称</th><th>描述</th><!--<th>最后修改日期</th>--><th>操作</th></tr></thead>
-            <tbody>
+    <p class="info" style="text-align:left">
             #for(item : items)
-                <tr>
-                    <td>#(item.id)</td>
-                    <td>#(item.title)</td>
-                    <td>#(item.content)</td>
-                    <!--<td>#(item.lastGenerate)</td>-->
-                    <td>
-                        <a href="item?id=#(item.id)" class="layui-btn">查看动态预览</a>
-                        <a href="item-#(item.id).html" class="layui-btn">查看静态文件</a>
-                        <a href="generageHtml?id=#(item.id)" class="layui-btn">生成静态文件</a>
-                        <a href="edit?id=#(item.id)" class="layui-btn">编辑静态文件</a>
-                    </td>
-                </tr>
+                <div style="text-align:left; padding-left: 500px">
+                    <a href="item-#(item.id).html"><img src="img/default_item.png"></a> &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="item-#(item.id).html" style="padding-top: 50px; font-family: 'Arial Black'">#(item.title)</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    #(item.content)
+                </div>
             #end
-            </tbody>
-        </table>
 
+            <div id="demo1">
+                <div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-2">
+                    <a href="javascript:;" class="layui-laypage-prev layui-disabled" data-page="0">上一页</a>
+                        <span class="layui-laypage-curr"><em class="layui-laypage-em"></em><em>1</em></span><a href="javascript:;" data-page="2">2</a>
+                    <a href="javascript:;" data-page="3">3</a>
+                    <a href="javascript:;" data-page="4">4</a>
+                    <a href="javascript:;" data-page="5">5</a>
+                    <span class="layui-laypage-spr">…</span><a href="javascript:;" class="layui-laypage-last" title="尾页" data-page="7">7</a>
+                    <a href="javascript:;" class="layui-laypage-next" data-page="2">下一页</a>
+                </div>
+            </div>
     </p>
     <div style="text-align: -webkit-center;">
 

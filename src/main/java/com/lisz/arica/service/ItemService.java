@@ -1,5 +1,7 @@
 package com.lisz.arica.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.jfinal.kit.Kv;
 import com.jfinal.template.Engine;
 import com.jfinal.template.Template;
@@ -214,5 +216,12 @@ public class ItemService {
 			}
 		}
 		return itemsMissingFile;
+	}
+
+	public List<Item> findByPage(int pageNum, int pageSize) {
+		PageHelper.startPage(pageNum, pageSize);
+		List<Item> items = itemDao.selectByExample(null);
+		PageInfo<Item> pageInfo = new PageInfo<>(items);
+		return  pageInfo.getList();
 	}
 }
