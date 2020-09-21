@@ -6,7 +6,6 @@ import com.jfinal.kit.Kv;
 import com.jfinal.template.Engine;
 import com.jfinal.template.Template;
 import com.jfinal.template.ext.spring.JFinalViewResolver;
-import com.jfinal.template.source.FileSourceFactory;
 import com.lisz.arica.entity.Item;
 import com.lisz.arica.entity.ItemHtml;
 import com.lisz.arica.mapper.ItemDAO;
@@ -15,11 +14,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.util.ClassUtils;
 
 import java.io.*;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 
 @Service
@@ -28,7 +25,16 @@ public class ItemService {
 
 	private static final String MAIN_HTML_TEMPLATE_FILE_NAME = "item_main.html";
 
+	private static final String ITEM_PAGE_TEMPLATE_FILE_NAME = "item_page.html";
+
+	private static final String ITEM_STATIC_PAGE_TEMPLATE_FILE_NAME = "item_static_page_template.html";
+
+	// 只有前2页是static的，只生成前两页的静态页面文件
+	private static final int ITEM_STATIC_PAGE_COUNT = 2;
+
 	private static final Set<Integer> ITEM_IDS_IN_EDITION = new HashSet<>();
+
+	private static final int DEFAULT_PAGE_SIZE = 5;
 
 	@Autowired
 	private ItemDAO itemDao;
@@ -222,5 +228,45 @@ public class ItemService {
 		PageHelper.startPage(pageNum, pageSize);
 		List<Item> items = itemDao.selectByExample(null);
 		return new PageInfo<>(items);
+	}
+
+	// 生成各个列表分页
+	public void generateItemPages() {
+		long count = itemDao.countByExample(null);
+		if (count == 0) throw new RuntimeException("商品列表为空，无法生成静态分页页面");
+		long pages = count / DEFAULT_PAGE_SIZE + (count % DEFAULT_PAGE_SIZE == 0 ? 0 : 1);
+
+		Engine engine = resolver.getEngine();
+		Template template = engine.getTemplate(ITEM_STATIC_PAGE_TEMPLATE_FILE_NAME);
+
+		int pageNum = 1;
+		for (; pageNum <= ITEM_STATIC_PAGE_COUNT - 1; pageNum++) {
+			generateItemPage(pageNum, template);
+		}
+
+		template = engine.getTemplate(ITEM_PAGE_TEMPLATE_FILE_NAME);
+
+		if(pageNum <= pages) {
+			generateItemPage(pageNum, template);
+		}
+
+		// ITEM_STATIC_PAGE_COUNT之后的页面就都不生成静态的了，想全部生成的话，就用下面这个for替换上面的if语句块
+//		for (; pageNum <= pages; pageNum++) {
+//			generateItemPage(pageNum, template);
+//		}
+	}
+
+	private void generateItemPage(int pageNum, Template template) {
+		// 每次只是查询某一个页面区间，然后生成该页码的静态文件
+		PageHelper.startPage(pageNum, DEFAULT_PAGE_SIZE);
+		List<Item> items = itemDao.selectByExample(null);
+
+		PageInfo<Item> pageInfo = new PageInfo<>(items);
+		Kv kv = Kv.by("pageInfo", pageInfo);
+		String fileName = String.format("item_page-%s.html", pageNum);
+		String filePath = nginxRoot;
+
+		String fullPath = filePath + "/" + fileName;
+		template.render(kv, fullPath);
 	}
 }

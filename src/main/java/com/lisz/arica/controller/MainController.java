@@ -199,4 +199,12 @@ public class MainController {
 		model.addAttribute("itemsMissingFile", itemsMissingFile);
 		return "check_file";
 	}
+
+	@GetMapping("generateItemPages")
+	public String generateItemPages(Model model) {
+		itemService.generateItemPages();
+		String msg = "分页静态文件生成成功：<a href='item_page-1.html'>查看</a>";
+		model.addAttribute("msg", msg);
+		return "success";
+	}
 }
