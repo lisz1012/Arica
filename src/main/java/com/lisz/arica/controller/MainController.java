@@ -1,5 +1,6 @@
 package com.lisz.arica.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.lisz.arica.entity.Item;
 import com.lisz.arica.entity.ItemHtml;
 import com.lisz.arica.service.ItemService;
@@ -148,8 +149,8 @@ public class MainController {
 	public String main(Model model, @RequestParam(defaultValue = "1") int pageNum, @RequestParam(defaultValue = "5") int pageSize) {
 		// List<Item> items = itemService.findAll();
 		// Category参数还没传过来
-		List<Item> items = itemService.findByPage(pageNum, pageSize);
-		model.addAttribute("items", items);
+		PageInfo<Item> pageInfo = itemService.findByPage(pageNum, pageSize);
+		model.addAttribute("pageInfo", pageInfo);
 		//return "item_main";
 		return "item_page";
 	}

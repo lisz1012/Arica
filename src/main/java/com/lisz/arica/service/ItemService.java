@@ -218,10 +218,9 @@ public class ItemService {
 		return itemsMissingFile;
 	}
 
-	public List<Item> findByPage(int pageNum, int pageSize) {
+	public PageInfo<Item> findByPage(int pageNum, int pageSize) {
 		PageHelper.startPage(pageNum, pageSize);
 		List<Item> items = itemDao.selectByExample(null);
-		PageInfo<Item> pageInfo = new PageInfo<>(items);
-		return  pageInfo.getList();
+		return new PageInfo<>(items);
 	}
 }
