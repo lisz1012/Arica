@@ -7,6 +7,7 @@ import com.jfinal.template.Engine;
 import com.jfinal.template.Template;
 import com.jfinal.template.ext.spring.JFinalViewResolver;
 import com.lisz.arica.entity.Item;
+import com.lisz.arica.entity.ItemExample;
 import com.lisz.arica.entity.ItemHtml;
 import com.lisz.arica.mapper.ItemDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,12 @@ public class ItemService {
 
 	private static final String MAIN_HTML_TEMPLATE_FILE_NAME = "item_main.html";
 
-	private static final String ITEM_PAGE_TEMPLATE_FILE_NAME = "item_page.html";
+	private static final String ITEM_PAGE_TEMPLATE_FILE_NAME = "item_non_static_page_template.html";
 
 	private static final String ITEM_STATIC_PAGE_TEMPLATE_FILE_NAME = "item_static_page_template.html";
 
 	// 只有前2页是static的，只生成前两页的静态页面文件, 因为很多人也就看前两页
-	private static final int ITEM_STATIC_PAGE_COUNT = 20;
+	private static final int ITEM_STATIC_PAGE_COUNT = 2;
 
 	private static final Set<Integer> ITEM_IDS_IN_EDITION = new HashSet<>();
 
@@ -233,23 +234,41 @@ public class ItemService {
 	// 生成各个列表分页
 	public void generateItemPages() {
 		// 取出总记录条数并计算所需的页数
-		long count = itemDao.countByExample(null);
-		if (count == 0) throw new RuntimeException("商品列表为空，无法生成静态分页页面");
-		long pages = count / DEFAULT_PAGE_SIZE + (count % DEFAULT_PAGE_SIZE == 0 ? 0 : 1);
+		long totalItemCount = itemDao.countByExample(null);
+		if (totalItemCount == 0) throw new RuntimeException("商品列表为空，无法生成静态分页页面");
+		long totalPages = totalItemCount / DEFAULT_PAGE_SIZE + (totalItemCount % DEFAULT_PAGE_SIZE == 0 ? 0 : 1);
+		int staticItemCount = ITEM_STATIC_PAGE_COUNT * DEFAULT_PAGE_SIZE;
 
 		Engine engine = resolver.getEngine();
 		Template template = engine.getTemplate(ITEM_STATIC_PAGE_TEMPLATE_FILE_NAME);
 
+		ItemExample example = new ItemExample();
+		example.setLimit(staticItemCount);
+		List<Item> staticItems = itemDao.selectByExample(example);
+
+
 		// 只对前ITEM_STATIC_PAGE_COUNT页做静态页面，其中最后一页用动态模板item_page.html，因为之后的页都是动态获取了
 		int pageNum = 1;
-		for (; pageNum <= Math.min(ITEM_STATIC_PAGE_COUNT, pages) - 1; pageNum++) {
-			generateItemPage(pageNum, template);
+		for (; pageNum <= Math.min(ITEM_STATIC_PAGE_COUNT, totalPages) - 1; pageNum++) {
+			generateItemPage(pageNum,
+							 template,
+					         staticItems.subList(
+					         		(pageNum - 1) * DEFAULT_PAGE_SIZE,
+							         Math.min(pageNum * DEFAULT_PAGE_SIZE, staticItems.size())
+					         ),
+							 totalPages);
 		}
 
 		if(pageNum == ITEM_STATIC_PAGE_COUNT) {
 			template = engine.getTemplate(ITEM_PAGE_TEMPLATE_FILE_NAME);
 		}
-		generateItemPage(pageNum, template);
+		generateItemPage(pageNum,
+				template,
+				staticItems.subList(
+						(pageNum - 1) * DEFAULT_PAGE_SIZE,
+						Math.min(pageNum * DEFAULT_PAGE_SIZE, staticItems.size())
+				),
+				totalPages);
 
 		// ITEM_STATIC_PAGE_COUNT之后的页面就都不生成静态的了，想全部生成的话，就用下面这个for替换上面的if语句块
 //		for (; pageNum <= pages; pageNum++) {
@@ -257,13 +276,15 @@ public class ItemService {
 //		}
 	}
 
-	private void generateItemPage(int pageNum, Template template) {
+	private void generateItemPage(int pageNum, Template template, List<Item> items, long totalPages) {
 		// 每次只是查询某一个页面区间，然后生成该页码的静态文件
-		PageHelper.startPage(pageNum, DEFAULT_PAGE_SIZE);
-		List<Item> items = itemDao.selectByExample(null); // 这里由于设置了PageHelper.startPage，所以myBatis发出的DSQL是带limit的
+		//PageHelper.startPage(pageNum, DEFAULT_PAGE_SIZE);
+		// List<Item> items = itemDao.selectByExample(null); // 这里由于设置了PageHelper.startPage，所以myBatis发出的DSQL是带limit的
 
-		PageInfo<Item> pageInfo = new PageInfo<>(items);
-		Kv kv = Kv.by("pageInfo", pageInfo);
+		//PageInfo<Item> pageInfo = new PageInfo<>(items);
+		Kv kv = Kv.by("items", items);
+		kv.set("totalPages", totalPages);
+		kv.set("currentPageNum", pageNum);
 		String fileName = String.format("item_page-%s.html", pageNum);
 		String filePath = nginxRoot;
 
