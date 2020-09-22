@@ -30,7 +30,7 @@ public class ItemService {
 	private static final String ITEM_STATIC_PAGE_TEMPLATE_FILE_NAME = "item_static_page_template.html";
 
 	// 只有前2页是static的，只生成前两页的静态页面文件, 因为很多人也就看前两页
-	private static final int ITEM_STATIC_PAGE_COUNT = 2;
+	private static final int ITEM_STATIC_PAGE_COUNT = 20;
 
 	private static final Set<Integer> ITEM_IDS_IN_EDITION = new HashSet<>();
 
@@ -260,7 +260,7 @@ public class ItemService {
 	private void generateItemPage(int pageNum, Template template) {
 		// 每次只是查询某一个页面区间，然后生成该页码的静态文件
 		PageHelper.startPage(pageNum, DEFAULT_PAGE_SIZE);
-		List<Item> items = itemDao.selectByExample(null);
+		List<Item> items = itemDao.selectByExample(null); // 这里由于设置了PageHelper.startPage，所以myBatis发出的DSQL是带limit的
 
 		PageInfo<Item> pageInfo = new PageInfo<>(items);
 		Kv kv = Kv.by("pageInfo", pageInfo);
