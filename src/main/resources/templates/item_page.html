@@ -67,7 +67,7 @@
         <div id="demo1">
             <div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-2">
                 #if(pageInfo.pageNum > pageInfo.navigateFirstPage)
-                    <a href="main?pageNum=1&pageSize=5" class="layui-laypage-prev layui-enabled" data-page="1">首页</a>
+                    <a href="item_page-1.html" class="layui-laypage-prev layui-enabled" data-page="1">首页</a> <!-- 拿掉 href="main?pageNum=1&pageSize=5" 首页链接用静态页面 -->
                     <a href="main?pageNum=#(pageInfo.prePage)&pageSize=5" class="layui-laypage-prev layui-enabled" data-page="#(pageInfo.prePage)">上一页</a>
                 #else
                     <a class="layui-laypage-prev layui-disabled" data-page="1">首页</a> <!-- href="" 可写可不写 -->

@@ -29,7 +29,7 @@ public class ItemService {
 
 	private static final String ITEM_STATIC_PAGE_TEMPLATE_FILE_NAME = "item_static_page_template.html";
 
-	// 只有前2页是static的，只生成前两页的静态页面文件
+	// 只有前2页是static的，只生成前两页的静态页面文件, 因为很多人也就看前两页
 	private static final int ITEM_STATIC_PAGE_COUNT = 2;
 
 	private static final Set<Integer> ITEM_IDS_IN_EDITION = new HashSet<>();
@@ -232,6 +232,7 @@ public class ItemService {
 
 	// 生成各个列表分页
 	public void generateItemPages() {
+		// 取出总记录条数并计算所需的页数
 		long count = itemDao.countByExample(null);
 		if (count == 0) throw new RuntimeException("商品列表为空，无法生成静态分页页面");
 		long pages = count / DEFAULT_PAGE_SIZE + (count % DEFAULT_PAGE_SIZE == 0 ? 0 : 1);
@@ -239,16 +240,16 @@ public class ItemService {
 		Engine engine = resolver.getEngine();
 		Template template = engine.getTemplate(ITEM_STATIC_PAGE_TEMPLATE_FILE_NAME);
 
+		// 只对前ITEM_STATIC_PAGE_COUNT页做静态页面，其中最后一页用动态模板item_page.html，因为之后的页都是动态获取了
 		int pageNum = 1;
-		for (; pageNum <= ITEM_STATIC_PAGE_COUNT - 1; pageNum++) {
+		for (; pageNum <= Math.min(ITEM_STATIC_PAGE_COUNT, pages) - 1; pageNum++) {
 			generateItemPage(pageNum, template);
 		}
 
-		template = engine.getTemplate(ITEM_PAGE_TEMPLATE_FILE_NAME);
-
-		if(pageNum <= pages) {
-			generateItemPage(pageNum, template);
+		if(pageNum == ITEM_STATIC_PAGE_COUNT) {
+			template = engine.getTemplate(ITEM_PAGE_TEMPLATE_FILE_NAME);
 		}
+		generateItemPage(pageNum, template);
 
 		// ITEM_STATIC_PAGE_COUNT之后的页面就都不生成静态的了，想全部生成的话，就用下面这个for替换上面的if语句块
 //		for (; pageNum <= pages; pageNum++) {
