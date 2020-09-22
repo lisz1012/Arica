@@ -272,11 +272,6 @@ public class ItemService {
 	}
 
 	private void generateItemPage(int pageNum, Template template, List<Item> items, long totalPages) {
-		// 每次只是查询某一个页面区间，然后生成该页码的静态文件
-		//PageHelper.startPage(pageNum, DEFAULT_PAGE_SIZE);
-		// List<Item> items = itemDao.selectByExample(null); // 这里由于设置了PageHelper.startPage，所以myBatis发出的DSQL是带limit的
-
-		//PageInfo<Item> pageInfo = new PageInfo<>(items);
 		Kv kv = Kv.by("items", items);
 		kv.set("totalPages", totalPages);
 		kv.set("currentPageNum", pageNum);
