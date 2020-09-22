@@ -246,7 +246,6 @@ public class ItemService {
 		example.setLimit(staticItemCount);
 		List<Item> staticItems = itemDao.selectByExample(example);
 
-
 		// 只对前ITEM_STATIC_PAGE_COUNT页做静态页面，其中最后一页用动态模板item_page.html，因为之后的页都是动态获取了
 		int pageNum = 1;
 		for (; pageNum <= Math.min(ITEM_STATIC_PAGE_COUNT, totalPages) - 1; pageNum++) {
@@ -259,6 +258,7 @@ public class ItemService {
 							 totalPages);
 		}
 
+		// 前几页静态 --> 动态页面无缝衔接，就不搞双向的了，回来的时候不去静态页面了，方便测试
 		if(pageNum == ITEM_STATIC_PAGE_COUNT) {
 			template = engine.getTemplate(ITEM_PAGE_TEMPLATE_FILE_NAME);
 		}
@@ -269,11 +269,6 @@ public class ItemService {
 						Math.min(pageNum * DEFAULT_PAGE_SIZE, staticItems.size())
 				),
 				totalPages);
-
-		// ITEM_STATIC_PAGE_COUNT之后的页面就都不生成静态的了，想全部生成的话，就用下面这个for替换上面的if语句块
-//		for (; pageNum <= pages; pageNum++) {
-//			generateItemPage(pageNum, template);
-//		}
 	}
 
 	private void generateItemPage(int pageNum, Template template, List<Item> items, long totalPages) {
