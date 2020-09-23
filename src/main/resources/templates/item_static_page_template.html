@@ -68,7 +68,11 @@
             <div class="layui-box layui-laypage layui-laypage-default" id="layui-laypage-2">
                 #if(currentPageNum > 1)
                     <a href="item_page-1.html" class="layui-laypage-prev layui-enabled" data-page="1">首页</a>
-                    <a href="item_page-#(currentPageNum - 1).html" class="layui-laypage-prev layui-enabled" data-page="#(currentPageNum - 1)">上一页</a>
+                    #if(currentPageNum - 1 <= staticPages)
+                        <a href="item_page-#(currentPageNum - 1).html" class="layui-laypage-prev layui-enabled" data-page="#(currentPageNum - 1)">上一页</a>
+                    #else
+                        <a href="main?pageNum=#(currentPageNum - 1)&pageSize=5" class="layui-laypage-prev layui-enabled" data-page="#(currentPageNum - 1)">上一页</a>
+                    #end
                 #else
                     <a class="layui-laypage-prev layui-disabled" data-page="1">首页</a> <!-- href="" 可写可不写 -->
                     <a class="layui-laypage-prev layui-disabled">上一页</a>
@@ -78,12 +82,20 @@
                     #if (i == currentPageNum)
                         <span class="layui-laypage-curr"><em class="layui-laypage-em"></em><em>#(i)</em></span>
                     #else
-                        <a href="item_page-#(i).html" data-page="#(pageNum)">#(i)</a>
+                        #if (i <= staticPages)
+                            <a href="item_page-#(i).html" data-page="#(pageNum)">#(i)</a>
+                        #else
+                            <a href="main?pageNum=#(i)&pageSize=5" data-page="#(i)">#(i)</a>
+                        #end
                     #end
                 #end
 
                 #if(currentPageNum < totalPages)
-                    <a href="item_page-#(currentPageNum + 1).html" class="layui-laypage-next layui-enabled" data-page="#(currentPageNum + 1)">下一页</a>
+                    #if(currentPageNum + 1 <= staticPages)
+                        <a href="item_page-#(currentPageNum + 1).html" class="layui-laypage-next layui-enabled" data-page="#(currentPageNum + 1)">下一页</a>
+                    #else
+                        <a href="main?pageNum=#(currentPageNum + 1)&pageSize=5" class="layui-laypage-next layui-enabled" data-page="#(currentPageNum + 1)">下一页</a>
+                    #end
                     <a href="main?pageNum=#(totalPages)&pageSize=5" class="layui-laypage-next layui-enabled" data-page="#(totalPages)">尾页</a>
                 #else
                     <a class="layui-laypage-next layui-disabled">下一页</a>

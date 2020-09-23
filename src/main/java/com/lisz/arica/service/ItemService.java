@@ -26,7 +26,7 @@ public class ItemService {
 
 	private static final String MAIN_HTML_TEMPLATE_FILE_NAME = "item_main.html";
 
-	private static final String ITEM_PAGE_TEMPLATE_FILE_NAME = "item_non_static_page_template.html";
+	//private static final String ITEM_PAGE_TEMPLATE_FILE_NAME = "item_non_static_page_template.html";
 
 	private static final String ITEM_STATIC_PAGE_TEMPLATE_FILE_NAME = "item_static_page_template.html";
 
@@ -248,7 +248,7 @@ public class ItemService {
 
 		// 只对前ITEM_STATIC_PAGE_COUNT页做静态页面，其中最后一页用动态模板item_page.html，因为之后的页都是动态获取了
 		int pageNum = 1;
-		for (; pageNum <= Math.min(ITEM_STATIC_PAGE_COUNT, totalPages) - 1; pageNum++) {
+		for (; pageNum <= Math.min(ITEM_STATIC_PAGE_COUNT, totalPages); pageNum++) {
 			generateItemPage(pageNum,
 							 template,
 					         staticItems.subList(
@@ -258,23 +258,24 @@ public class ItemService {
 							 totalPages);
 		}
 
-		// 前几页静态 --> 动态页面无缝衔接，就不搞双向的了，回来的时候不去静态页面了，方便测试
-		if(pageNum == ITEM_STATIC_PAGE_COUNT) {
-			template = engine.getTemplate(ITEM_PAGE_TEMPLATE_FILE_NAME);
-		}
-		generateItemPage(pageNum,
-				template,
-				staticItems.subList(
-						(pageNum - 1) * DEFAULT_PAGE_SIZE,
-						Math.min(pageNum * DEFAULT_PAGE_SIZE, staticItems.size())
-				),
-				totalPages);
+//		// 前几页静态 --> 动态页面无缝衔接，就不搞双向的了，回来的时候不去静态页面了，方便测试
+//		if(pageNum == ITEM_STATIC_PAGE_COUNT) {
+//			template = engine.getTemplate(ITEM_PAGE_TEMPLATE_FILE_NAME);
+//		}
+//		generateItemPage(pageNum,
+//				template,
+//				staticItems.subList(
+//						(pageNum - 1) * DEFAULT_PAGE_SIZE,
+//						Math.min(pageNum * DEFAULT_PAGE_SIZE, staticItems.size())
+//				),
+//				totalPages);
 	}
 
 	private void generateItemPage(int pageNum, Template template, List<Item> items, long totalPages) {
 		Kv kv = Kv.by("items", items);
 		kv.set("totalPages", totalPages);
 		kv.set("currentPageNum", pageNum);
+		kv.set("staticPages", ITEM_STATIC_PAGE_COUNT);
 		String fileName = String.format("item_page-%s.html", pageNum);
 		String filePath = nginxRoot;
 
