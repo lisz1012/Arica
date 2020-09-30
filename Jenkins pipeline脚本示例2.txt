@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "Maven3"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'a16218d3-eb1d-4f5d-876c-78c55e63f431', url: 'https://github.com/lisz1012/Arica.git']]])
+            }
+        }
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                git 'https://github.com/lisz1012/Arica.git'
+
+                // Run Maven on a Unix agent.
+                sh "mvn -Dmaven.test.failure.ignore=true -Pprod clean package"
+
+                // To run Maven on a Windows agent, use
+                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'echo $jar_file_full_path'
+                sh '''
+                    pid=$(ssh root@$target_host "ps -ef | grep java | grep -v grep | awk  \'{print $2}\'"| awk \'{print $2}\')
+                    if [ "$pid" != "" ];
+                        then
+                        ssh root@$target_host "kill -9 ${pid}"
+                    fi
+                '''
+                sh 'scp -r $jar_file_full_path root@$target_host:/root/'
+                sh 'ssh root@$target_host "nohup java -jar /root/arica-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > /root/log 2>&1 &"'
+            }
+        }
+    }
+}
