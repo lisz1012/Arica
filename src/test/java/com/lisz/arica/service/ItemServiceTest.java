@@ -18,11 +18,4 @@ public class ItemServiceTest {
 		Assertions.assertNotNull(item);
 		Assertions.assertEquals(1, item.getId());
 	}
-
-	@Test
-	public void testGetById2(){
-		int id = -100;
-		Item item = itemService.getById(id);
-		Assertions.assertNull(item);
-	}
 }
