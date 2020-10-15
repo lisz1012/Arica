@@ -8,9 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class ItemServiceTest {
+	@Autowired
+	private ItemService itemService;
 
 	@Test
 	public void testGetById(){
+		System.out.println(itemService.hashCode());
 		System.out.println("Running testGetById");
 	}
 
